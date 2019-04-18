@@ -18,6 +18,11 @@ This project represents a sample implementation of a **SAML 2.0 Service Provider
 
 ### References
 
+#### Spring Boot Sample SAML 2.0 Service Provider
+
+> The original sample that the code is based on.
+> - **Ref.:** [https://vdenotaris.github.io/spring-boot-security-saml-sample/](https://vdenotaris.github.io/spring-boot-security-saml-sample/)
+
 #### Spring Boot
 
 > Spring Boot makes it easy to create Spring-powered, production-grade applications and services with absolute minimum fuss.  It takes an opinionated view of the Spring platform so that new and existing users can quickly get to the bits they need.
