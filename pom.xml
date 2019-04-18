@@ -4,15 +4,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.vdenotaris.spring</groupId>
-	<artifactId>spring-boot-security-saml-sample</artifactId>
-	<version>2.1.0.RELEASE</version>
+	<groupId>sample.security.spcp</groupId>
+	<artifactId>mockpass-spring-boot-security-saml-sample</artifactId>
+	<version>1.0.0.RELEASE</version>
 	<packaging>jar</packaging>
 
 	<!-- Project description -->
-	<name>Spring Boot sample SAML 2.0 Service Provider</name>
+	<name>Spring Boot sample SAML 2.0 Service Provider for SingPass/CorpPass</name>
 	<description>A sample SAML 2.0 Service Provider built on Spring Boot.</description>
-	<url>https://github.com/vdenotaris/spring-boot-security-saml-sample</url>
+	<url>https://github.com/justin-tay/mockpass-spring-boot-security-saml-sample</url>
 
 	<developers>
 		<developer>
@@ -28,6 +28,9 @@
 		</contributor>
 		<contributor>
 			<name>Alexey Syrtsev</name>
+		</contributor>
+		<contributor>
+			<name>Justin Tay</name>
 		</contributor>
 	</contributors>
 
@@ -127,9 +130,7 @@
 	</repositories>
 
 	<scm>
-		<connection>scm:git:git@github.com:vdenotaris/spring-boot-security-saml-sample.git</connection>
-		<url>scm:git:git@github.com:vdenotaris/spring-boot-security-saml-sample.git</url>
-		<developerConnection>scm:git:git@github.com:vdenotaris/spring-boot-security-saml-sample.git</developerConnection>
+		<url>scm:git:git@github.com:justin-tay/mockpass-spring-boot-security-saml-sample.git</url>
 	</scm>
 
 	<build>

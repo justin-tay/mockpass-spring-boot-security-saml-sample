@@ -16,6 +16,18 @@ This project represents a sample implementation of a **SAML 2.0 Service Provider
 - **Original Author:** Vincenzo De Notaris ([dev@vdenotaris.com](mailto:dev@vdenotaris.com))
 - **Website:** [www.vdenotaris.com](http://www.vdenotaris.com)
 
+---------
+
+## Walkthrough
+
+```
+mvn install
+
+java -jar target/mockpass-spring-boot-security-saml-sample-1.0.0.RELEASE.jar
+```
+
+---------
+
 ### References
 
 #### Spring Boot Sample SAML 2.0 Service Provider
