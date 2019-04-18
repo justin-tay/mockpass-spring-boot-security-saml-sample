@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.vdenotaris.spring.boot.security.saml.web.core;
+package sample.security.spcp.saml.web.core;
 
 import com.vdenotaris.spring.boot.security.saml.web.CommonTestSupport;
 import com.vdenotaris.spring.boot.security.saml.web.TestConfig;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opensaml.saml2.core.NameID;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml.SAMLCredential;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,12 +42,12 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes= TestConfig.class)
-public class SAMLUserDetailsServiceImplTest extends CommonTestSupport {
+public class SingPassCorpPassSAMLUserDetailsServiceTest extends CommonTestSupport {
 
     @Autowired
-    private SAMLUserDetailsServiceImpl userDetailsService;
+    private SingPassCorpPassSAMLUserDetailsService userDetailsService;
 
-    @Test
+    @Test(expected=UsernameNotFoundException.class)
     public void testLoadUserBySAML() {
         // given
         NameID mockNameID = mock(NameID.class);

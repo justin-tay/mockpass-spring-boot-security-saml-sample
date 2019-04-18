@@ -26,15 +26,17 @@ import java.util.Timer;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.velocity.app.VelocityEngine;
-import org.opensaml.saml2.metadata.provider.HTTPMetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
+import org.opensaml.saml2.metadata.provider.ResourceBackedMetadataProvider;
+import org.opensaml.util.resource.ClasspathResource;
+import org.opensaml.util.resource.ResourceException;
 import org.opensaml.xml.parse.ParserPool;
 import org.opensaml.xml.parse.StaticBasicParserPool;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -48,7 +50,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.saml.SAMLAuthenticationProvider;
 import org.springframework.security.saml.SAMLBootstrap;
 import org.springframework.security.saml.SAMLDiscovery;
-import org.springframework.security.saml.SAMLEntryPoint;
 import org.springframework.security.saml.SAMLLogoutFilter;
 import org.springframework.security.saml.SAMLLogoutProcessingFilter;
 import org.springframework.security.saml.SAMLProcessingFilter;
@@ -97,7 +98,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.vdenotaris.spring.boot.security.saml.web.core.SAMLUserDetailsServiceImpl;
+import sample.security.spcp.saml.web.core.SingPassCorpPassSAMLEntryPoint;
+import sample.security.spcp.saml.web.core.SingPassCorpPassSAMLUserDetailsService;
  
 @Configuration
 @EnableWebSecurity
@@ -119,7 +121,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
 	}
 	
     @Autowired
-    private SAMLUserDetailsServiceImpl samlUserDetailsServiceImpl;
+    private SingPassCorpPassSAMLUserDetailsService samlUserDetailsServiceImpl;
      
     // Initialization of the velocity engine
     @Bean
@@ -213,10 +215,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         DefaultResourceLoader loader = new DefaultResourceLoader();
         Resource storeFile = loader
                 .getResource("classpath:/saml/samlKeystore.jks");
-        String storePass = "nalle123";
+        String storePass = "password";
         Map<String, String> passwords = new HashMap<String, String>();
-        passwords.put("apollo", "nalle123");
-        String defaultKey = "apollo";
+        passwords.put("1", "password");
+        String defaultKey = "1";
         return new JKSKeyManager(storeFile, storePass, passwords, defaultKey);
     }
  
@@ -236,10 +238,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     // Entry point to initialize authentication, default values taken from
     // properties file
     @Bean
-    public SAMLEntryPoint samlEntryPoint() {
-        SAMLEntryPoint samlEntryPoint = new SAMLEntryPoint();
-        samlEntryPoint.setDefaultProfileOptions(defaultWebSSOProfileOptions());
-        return samlEntryPoint;
+    public SingPassCorpPassSAMLEntryPoint samlEntryPoint() {
+    	return new SingPassCorpPassSAMLEntryPoint();
+//        SAMLEntryPoint samlEntryPoint = new SAMLEntryPoint();
+//        samlEntryPoint.setDefaultProfileOptions(defaultWebSSOProfileOptions());
+//        return samlEntryPoint;
     }
     
     // Setup advanced info about metadata
@@ -261,19 +264,41 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     }
     
 	@Bean
-	@Qualifier("idp-ssocircle")
-	public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
+	@Qualifier("idp-singpass")
+	public ExtendedMetadataDelegate singpassExtendedMetadataProvider()
 			throws MetadataProviderException {
-		String idpSSOCircleMetadataURL = "https://idp.ssocircle.com/idp-meta.xml";
-		HTTPMetadataProvider httpMetadataProvider = new HTTPMetadataProvider(
-				this.backgroundTaskTimer, httpClient(), idpSSOCircleMetadataURL);
-		httpMetadataProvider.setParserPool(parserPool());
-		ExtendedMetadataDelegate extendedMetadataDelegate = 
-				new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
-		extendedMetadataDelegate.setMetadataTrustCheck(true);
-		extendedMetadataDelegate.setMetadataRequireSignature(false);
-		backgroundTaskTimer.purge();
-		return extendedMetadataDelegate;
+		try {
+			ClasspathResource storeFile = new ClasspathResource("/idp-singpass-metadata.xml");
+			ResourceBackedMetadataProvider httpMetadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
+			httpMetadataProvider.setParserPool(parserPool());
+			ExtendedMetadataDelegate extendedMetadataDelegate = 
+					new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+			extendedMetadataDelegate.setMetadataTrustCheck(true);
+			extendedMetadataDelegate.setMetadataRequireSignature(false);
+			backgroundTaskTimer.purge();
+			return extendedMetadataDelegate;
+		} catch (ResourceException e) {
+			throw new MetadataProviderException(e);
+		}
+	}
+	
+	@Bean
+	@Qualifier("idp-corppass")
+	public ExtendedMetadataDelegate corppassExtendedMetadataProvider()
+			throws MetadataProviderException {
+		try {
+			ClasspathResource storeFile = new ClasspathResource("/idp-corppass-metadata.xml");
+			ResourceBackedMetadataProvider httpMetadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
+			httpMetadataProvider.setParserPool(parserPool());
+			ExtendedMetadataDelegate extendedMetadataDelegate = 
+					new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+			extendedMetadataDelegate.setMetadataTrustCheck(true);
+			extendedMetadataDelegate.setMetadataRequireSignature(false);
+			backgroundTaskTimer.purge();
+			return extendedMetadataDelegate;
+		} catch (ResourceException e) {
+			throw new MetadataProviderException(e);
+		}
 	}
 
     // IDP Metadata configuration - paths to metadata of IDPs in circle of trust
@@ -283,7 +308,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Qualifier("metadata")
     public CachingMetadataManager metadata() throws MetadataProviderException {
         List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
-        providers.add(ssoCircleExtendedMetadataProvider());
+        providers.add(singpassExtendedMetadataProvider());
+        providers.add(corppassExtendedMetadataProvider());
         return new CachingMetadataManager(providers);
     }
  
@@ -291,10 +317,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Bean
     public MetadataGenerator metadataGenerator() {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
-        metadataGenerator.setEntityId("com:vdenotaris:spring:sp");
+        metadataGenerator.setEntityId("http://sp.example.com/demo1/metadata.php");
         metadataGenerator.setExtendedMetadata(extendedMetadata());
         metadataGenerator.setIncludeDiscoveryExtension(false);
-        metadataGenerator.setKeyManager(keyManager()); 
+        metadataGenerator.setKeyManager(keyManager());
+        List<String> bindingsSso = new ArrayList<String>();
+        bindingsSso.add("artifact");
+        metadataGenerator.setBindingsSSO(bindingsSso);
         return metadataGenerator;
     }
  
@@ -385,15 +414,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     }
 	
     // Bindings
-    private ArtifactResolutionProfile artifactResolutionProfile() {
+    private ArtifactResolutionProfile artifactResolutionProfile() throws MetadataProviderException {
         final ArtifactResolutionProfileImpl artifactResolutionProfile = 
         		new ArtifactResolutionProfileImpl(httpClient());
         artifactResolutionProfile.setProcessor(new SAMLProcessorImpl(soapBinding()));
+        artifactResolutionProfile.setMetadata(metadata());
         return artifactResolutionProfile;
     }
     
     @Bean
-    public HTTPArtifactBinding artifactBinding(ParserPool parserPool, VelocityEngine velocityEngine) {
+    public HTTPArtifactBinding artifactBinding(ParserPool parserPool, VelocityEngine velocityEngine) throws MetadataProviderException {
         return new HTTPArtifactBinding(parserPool, velocityEngine, artifactResolutionProfile());
     }
  
@@ -424,7 +454,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     
     // Processor
 	@Bean
-	public SAMLProcessorImpl processor() {
+	public SAMLProcessorImpl processor() throws MetadataProviderException {
 		Collection<SAMLBinding> bindings = new ArrayList<SAMLBinding>();
 		bindings.add(httpRedirectDeflateBinding());
 		bindings.add(httpPostBinding());
@@ -451,8 +481,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                 metadataDisplayFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/SSO/**"),
                 samlWebSSOProcessingFilter()));
-        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/SSOHoK/**"),
-                samlWebSSOHoKProcessingFilter()));
+//        chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/SSOHoK/**"),
+//                samlWebSSOHoKProcessingFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/SingleLogout/**"),
                 samlLogoutProcessingFilter()));
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/discovery/**"),

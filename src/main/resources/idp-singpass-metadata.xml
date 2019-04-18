@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<EntityDescriptor entityID="http://localhost:5156/singpass/saml20" xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
+    <IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <KeyDescriptor use="signing">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>
+MIIDVjCCAj4CCQCsiLHZmKY1QjANBgkqhkiG9w0BAQUFADBsMQswCQYDVQQGEwJT
+RzESMBAGA1UECAwJU2luZ2Fwb3JlMRIwEAYDVQQHDAlTaW5nYXBvcmUxHjAcBgNV
+BAoMFVNpbmdQYXNzIGFuZCBDb3JwUGFzczEVMBMGA1UECwwMTW9jayBTZXJ2aWNl
+MCAXDTE4MDgxNTA2MTE1MFoYDzIwODQwNDMwMDYxMTUwWjBsMQswCQYDVQQGEwJT
+RzESMBAGA1UECAwJU2luZ2Fwb3JlMRIwEAYDVQQHDAlTaW5nYXBvcmUxHjAcBgNV
+BAoMFVNpbmdQYXNzIGFuZCBDb3JwUGFzczEVMBMGA1UECwwMTW9jayBTZXJ2aWNl
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr4flVLO/RsDFmgqOduMe
+bMBGiLcd2+zX6VdkdrnWl4/NMehycSR7aSuMqkDji/dqsoY3Q1VHWUYoWGLrAjZ/
+JP/Ad2vwI1D3SJLG4xZKtGawM1g3DkG9Y2efchk1r7+WrMEn81DNJ1ib+462g1yN
+llgxeDCRaImsgihjztWFRcPu/dvLFu7nVDL0nTsN8Sqldh2ydMlNnmXixL63FUaE
+YHsYylm/60swGla3ibhOfzCbmjkN44vrktBkZHhsI0G15QF5vn0Nbz7DfHp2IuxZ
+XwTnNgjz1QSpV1+kxHosJFTa2D1TS1Ki9FgMIj0av0TqK2MkPq5pnTm0XvZ/O6Hw
+4wIDAQABMA0GCSqGSIb3DQEBBQUAA4IBAQAnuQ3AIqdZP5N0aKyspTwNRaV2fk6W
+iGO39Bt9ehxydZapzpNsDCFQdTSmNbQQngxrN8zSXZH2D8bihM49aBkMnZtSE1Ti
+WJ++kjftuX/T1H1QJJo+RDl1riZJKZj9Jh+xASJgVObA4VEDnRLvAb72PWpCupqr
+m1R97ippgbkraKamY+plATK+/eqEgBTxK+PAZrHhodtdtCZRQRoHCuLPPo/xQ/P8
+a/SGMBNsIuaWX+ulWO/jfqgdzJl4njTgPRFJC80iyOfu3CZSsKLOXbrSWhz4+nub
+GZjcicSwxkT6P5/R85+AO81AYUlwuy7hrEJfouQr3syYRIge/COJaNDI
+                   </ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </KeyDescriptor>
+        <KeyDescriptor use="encryption">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>
+MIIDVjCCAj4CCQCsiLHZmKY1QjANBgkqhkiG9w0BAQUFADBsMQswCQYDVQQGEwJT
+RzESMBAGA1UECAwJU2luZ2Fwb3JlMRIwEAYDVQQHDAlTaW5nYXBvcmUxHjAcBgNV
+BAoMFVNpbmdQYXNzIGFuZCBDb3JwUGFzczEVMBMGA1UECwwMTW9jayBTZXJ2aWNl
+MCAXDTE4MDgxNTA2MTE1MFoYDzIwODQwNDMwMDYxMTUwWjBsMQswCQYDVQQGEwJT
+RzESMBAGA1UECAwJU2luZ2Fwb3JlMRIwEAYDVQQHDAlTaW5nYXBvcmUxHjAcBgNV
+BAoMFVNpbmdQYXNzIGFuZCBDb3JwUGFzczEVMBMGA1UECwwMTW9jayBTZXJ2aWNl
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr4flVLO/RsDFmgqOduMe
+bMBGiLcd2+zX6VdkdrnWl4/NMehycSR7aSuMqkDji/dqsoY3Q1VHWUYoWGLrAjZ/
+JP/Ad2vwI1D3SJLG4xZKtGawM1g3DkG9Y2efchk1r7+WrMEn81DNJ1ib+462g1yN
+llgxeDCRaImsgihjztWFRcPu/dvLFu7nVDL0nTsN8Sqldh2ydMlNnmXixL63FUaE
+YHsYylm/60swGla3ibhOfzCbmjkN44vrktBkZHhsI0G15QF5vn0Nbz7DfHp2IuxZ
+XwTnNgjz1QSpV1+kxHosJFTa2D1TS1Ki9FgMIj0av0TqK2MkPq5pnTm0XvZ/O6Hw
+4wIDAQABMA0GCSqGSIb3DQEBBQUAA4IBAQAnuQ3AIqdZP5N0aKyspTwNRaV2fk6W
+iGO39Bt9ehxydZapzpNsDCFQdTSmNbQQngxrN8zSXZH2D8bihM49aBkMnZtSE1Ti
+WJ++kjftuX/T1H1QJJo+RDl1riZJKZj9Jh+xASJgVObA4VEDnRLvAb72PWpCupqr
+m1R97ippgbkraKamY+plATK+/eqEgBTxK+PAZrHhodtdtCZRQRoHCuLPPo/xQ/P8
+a/SGMBNsIuaWX+ulWO/jfqgdzJl4njTgPRFJC80iyOfu3CZSsKLOXbrSWhz4+nub
+GZjcicSwxkT6P5/R85+AO81AYUlwuy7hrEJfouQr3syYRIge/COJaNDI
+                    </ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+            <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc">
+                <xenc:KeySize xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">256</xenc:KeySize>
+			</EncryptionMethod>
+        </KeyDescriptor>
+        <ArtifactResolutionService index="0" isDefault="true" Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="http://localhost:5156/singpass/soap"/>
+        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+        <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</NameIDFormat>
+        <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</NameIDFormat>
+        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos</NameIDFormat>
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://localhost:5156/singpass/logininitial"/>
+    </IDPSSODescriptor>
+</EntityDescriptor>

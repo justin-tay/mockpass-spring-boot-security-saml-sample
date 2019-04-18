@@ -19,6 +19,6 @@ package com.vdenotaris.spring.boot.security.saml.web;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.vdenotaris.spring.boot.security.saml.web","sample.security.spcp.saml.web.core"})
 public class TestConfig implements WebMvcConfigurer {
 }
