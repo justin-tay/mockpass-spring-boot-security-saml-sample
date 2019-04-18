@@ -20,11 +20,23 @@ This project represents a sample implementation of a **SAML 2.0 Service Provider
 
 ## Walkthrough
 
+Installing and running the sample application
+
 ```
 mvn install
 
 java -jar target/mockpass-spring-boot-security-saml-sample-1.0.0.RELEASE.jar
 ```
+
+Use the following environment variables when configuring MockPass
+
+```
+SINGPASS_ASSERT_ENDPOINT=http://localhost:8080/saml/SSO
+CORPPASS_ASSERT_ENDPOINT=http://localhost:8080/saml/SSO
+SHOW_LOGIN_PAGE=true
+```
+
+Access the application at http://localhost:8080/landing
 
 ---------
 
