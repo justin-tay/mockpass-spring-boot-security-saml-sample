@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
+import javax.xml.crypto.dsig.DigestMethod;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.velocity.app.VelocityEngine;
@@ -33,6 +35,7 @@ import org.opensaml.util.resource.ClasspathResource;
 import org.opensaml.util.resource.ResourceException;
 import org.opensaml.xml.parse.ParserPool;
 import org.opensaml.xml.parse.StaticBasicParserPool;
+import org.opensaml.xml.signature.SignatureConstants;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +101,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import sample.security.spcp.saml.web.core.SingPassCorpPassSAMLBootstrap;
 import sample.security.spcp.saml.web.core.SingPassCorpPassSAMLEntryPoint;
 import sample.security.spcp.saml.web.core.SingPassCorpPassSAMLUserDetailsService;
  
@@ -164,8 +168,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
  
     // Initialization of OpenSAML library
     @Bean
-    public static SAMLBootstrap sAMLBootstrap() {
-        return new SAMLBootstrap();
+    public static SAMLBootstrap samlBootstrap() {
+        return new SingPassCorpPassSAMLBootstrap();
     }
  
     // Logger for SAML messages and events
@@ -252,6 +256,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
 	    	extendedMetadata.setIdpDiscoveryEnabled(true); 
 	    	extendedMetadata.setSignMetadata(false);
 	    	extendedMetadata.setEcpEnabled(true);
+	    	extendedMetadata.setDigestMethodAlgorithm(SignatureConstants.ALGO_ID_DIGEST_SHA256);
+	    	extendedMetadata.setSigningAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);
 	    	return extendedMetadata;
     }
     
