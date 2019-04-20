@@ -26,6 +26,8 @@ import java.util.Timer;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.velocity.app.VelocityEngine;
+import org.opensaml.saml2.metadata.Endpoint;
+import org.opensaml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml2.metadata.provider.MetadataProvider;
 import org.opensaml.saml2.metadata.provider.MetadataProviderException;
 import org.opensaml.saml2.metadata.provider.ResourceBackedMetadataProvider;
@@ -38,6 +40,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -65,6 +68,7 @@ import org.springframework.security.saml.metadata.ExtendedMetadataDelegate;
 import org.springframework.security.saml.metadata.MetadataDisplayFilter;
 import org.springframework.security.saml.metadata.MetadataGenerator;
 import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
+import org.springframework.security.saml.metadata.MetadataMemoryProvider;
 import org.springframework.security.saml.parser.ParserPoolHolder;
 import org.springframework.security.saml.processor.HTTPArtifactBinding;
 import org.springframework.security.saml.processor.HTTPPAOS11Binding;
@@ -98,6 +102,8 @@ import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuc
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import sample.security.spcp.saml.web.core.SingPassCorpPassSAMLBootstrap;
 import sample.security.spcp.saml.web.core.SingPassCorpPassSAMLEntryPoint;
@@ -266,15 +272,61 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         idpDiscovery.setIdpSelectionPath("/saml/discovery");
         return idpDiscovery;
     }
-    
+
+	@Value("${idp.singpass.id:#{null}}")
+	private String idpSingPassEntityId;
+	private static final String DEFAULT_SINGPASS_ENTITY_ID = "http://localhost:5156/singpass/saml20";
+
 	@Bean
 	@Qualifier("idp-singpass")
 	public ExtendedMetadataDelegate singpassExtendedMetadataProvider()
 			throws MetadataProviderException {
 		try {
 			ClasspathResource storeFile = new ClasspathResource("/idp-singpass-metadata.xml");
-			ResourceBackedMetadataProvider metadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
-			metadataProvider.setParserPool(parserPool());
+			ResourceBackedMetadataProvider resourceBackedMetadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
+			resourceBackedMetadataProvider.setParserPool(parserPool());
+			resourceBackedMetadataProvider.initialize();
+			MetadataProvider metadataProvider = resourceBackedMetadataProvider;
+
+			// Adjustment of metadata is only to cater to demonstration using docker so config can be changed by environment variables
+			if(idpSingPassEntityId != null && !DEFAULT_SINGPASS_ENTITY_ID.equals(idpSingPassEntityId))
+			{
+				resourceBackedMetadataProvider.initialize();
+				metadataProvider = adjustMetadataForConfiguration(metadataProvider, DEFAULT_SINGPASS_ENTITY_ID, idpSingPassEntityId);
+			}
+			ExtendedMetadataDelegate extendedMetadataDelegate = 
+					new ExtendedMetadataDelegate(metadataProvider, extendedMetadata());
+			extendedMetadataDelegate.setMetadataTrustCheck(true);
+			extendedMetadataDelegate.setMetadataRequireSignature(false);
+			
+			
+			backgroundTaskTimer.purge();
+			return extendedMetadataDelegate;
+		} catch (ResourceException e) {
+			throw new MetadataProviderException(e);
+		}
+	}
+
+	@Value("${idp.corppass.id:#{null}}")
+	private String idpCorpPassEntityId;
+	private static final String DEFAULT_CORPPASS_ENTITY_ID = "http://localhost:5156/corppass/saml20";
+	
+	@Bean
+	@Qualifier("idp-corppass")
+	public ExtendedMetadataDelegate corppassExtendedMetadataProvider()
+			throws MetadataProviderException {
+		try {
+			ClasspathResource storeFile = new ClasspathResource("/idp-corppass-metadata.xml");
+			ResourceBackedMetadataProvider resourceBackedMetadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
+			resourceBackedMetadataProvider.setParserPool(parserPool());
+			MetadataProvider metadataProvider = resourceBackedMetadataProvider;
+			
+			// Adjustment of metadata is only to cater to demonstration using docker so config can be changed by environment variables
+			if(idpCorpPassEntityId != null && !DEFAULT_CORPPASS_ENTITY_ID.equals(idpCorpPassEntityId)) {
+				resourceBackedMetadataProvider.initialize();
+				metadataProvider = adjustMetadataForConfiguration(metadataProvider, DEFAULT_CORPPASS_ENTITY_ID, idpCorpPassEntityId);
+			}
+			
 			ExtendedMetadataDelegate extendedMetadataDelegate = 
 					new ExtendedMetadataDelegate(metadataProvider, extendedMetadata());
 			extendedMetadataDelegate.setMetadataTrustCheck(true);
@@ -286,24 +338,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
 		}
 	}
 	
-	@Bean
-	@Qualifier("idp-corppass")
-	public ExtendedMetadataDelegate corppassExtendedMetadataProvider()
+	/**
+	 * Adjust the entity id and endpoints based on configuration to enable
+	 * configuration via environment variables in docker.
+	 * 
+	 * @param metadataProvider
+	 * @param existingEntityId
+	 * @param newEntityId
+	 * @return
+	 * @throws MetadataProviderException
+	 */
+	private MetadataMemoryProvider adjustMetadataForConfiguration(MetadataProvider metadataProvider, String existingEntityId, String newEntityId)
 			throws MetadataProviderException {
-		try {
-			ClasspathResource storeFile = new ClasspathResource("/idp-corppass-metadata.xml");
-			ResourceBackedMetadataProvider metadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
-			metadataProvider.setParserPool(parserPool());
-			ExtendedMetadataDelegate extendedMetadataDelegate = 
-					new ExtendedMetadataDelegate(metadataProvider, extendedMetadata());
-			extendedMetadataDelegate.setMetadataTrustCheck(true);
-			extendedMetadataDelegate.setMetadataRequireSignature(false);
-			backgroundTaskTimer.purge();
-			return extendedMetadataDelegate;
-		} catch (ResourceException e) {
-			throw new MetadataProviderException(e);
+		EntityDescriptor entityDescriptor = metadataProvider.getEntityDescriptor(existingEntityId);
+		entityDescriptor.setEntityID(newEntityId);
+		UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(newEntityId).build();
+		for(Endpoint endpoint : entityDescriptor.getRoleDescriptors().get(0).getEndpoints()) {
+			endpoint.setLocation(UriComponentsBuilder.fromHttpUrl(endpoint.getLocation()).host(uriComponents.getHost()).port(uriComponents.getPort()).build().toUriString());
 		}
+		MetadataMemoryProvider memoryMetadataProvider = new MetadataMemoryProvider(entityDescriptor);
+		memoryMetadataProvider.initialize();
+		return memoryMetadataProvider;
 	}
+
 
     // IDP Metadata configuration - paths to metadata of IDPs in circle of trust
     // is here
@@ -316,12 +373,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         providers.add(corppassExtendedMetadataProvider());
         return new CachingMetadataManager(providers);
     }
+    
+	@Value("${sp.id:http://sp.example.com/demo1/metadata.php}")
+	private String spEntityId;
  
     // Filter automatically generates default SP metadata
     @Bean
     public MetadataGenerator metadataGenerator() {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
-        metadataGenerator.setEntityId("http://sp.example.com/demo1/metadata.php");
+        metadataGenerator.setEntityId(spEntityId);
         metadataGenerator.setExtendedMetadata(extendedMetadata());
         metadataGenerator.setIncludeDiscoveryExtension(false);
         metadataGenerator.setKeyManager(keyManager());

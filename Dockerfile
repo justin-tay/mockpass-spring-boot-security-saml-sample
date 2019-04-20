@@ -31,10 +31,6 @@ COPY pom.xml /usr/src/app
 # Setup working directory
 WORKDIR /usr/src/app
 
-# Retrieve a fresh SSO Circle's certificate and store it within the application keystore
-RUN chmod +x /usr/src/app/src/main/resources/saml/update-certifcate.sh
-RUN cd /usr/src/app/src/main/resources/saml/ && sh ./update-certifcate.sh
-
 # Speed up Maven JVM a bit
 ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
 
@@ -62,7 +58,7 @@ USER appuser
 WORKDIR /home/appuser
 
 # Get the packed fat-JAR
-COPY --from=build /usr/src/app/target/spring-boot-security-saml*.jar /home/appuser/app/springsamlsp.jar 
+COPY --from=build /usr/src/app/target/mockpass-spring-boot-security-saml*.jar /home/appuser/app/springsamlsp.jar 
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080

@@ -1,0 +1,14 @@
+logging:
+  level:
+    org.springframework.security.saml: DEBUG
+    org.opensaml: DEBUG
+    com.vdenotaris.spring.boot.security.saml: DEBUG
+    sample.security.spcp: DEBUG
+  file: logs/file.log
+idp:
+  singpass:
+    id: ${SINGPASS_IDP_ID:http://localhost:5156/singpass/saml20}
+  corppass:
+    id: ${CORPPASS_IDP_ID:http://localhost:5156/corppass/saml20}
+sp:
+  id: ${SERVICE_PROVIDER_ENTITY_ID:http://sp.example.com/demo1/metadata.php}
