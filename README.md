@@ -68,6 +68,8 @@ Access the application at http://DOCKER-MACHINE-HOST:8080/landing
 
 *Note: the related Docker image is publicly available on [Docker Hub](https://hub.docker.com/r/justintay/mockpass-spring-saml-sp).*
 
+---------
+
 ### References
 
 #### Spring Boot Sample SAML 2.0 Service Provider
