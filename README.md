@@ -20,6 +20,29 @@ This project represents a sample implementation of a **SAML 2.0 Service Provider
 
 ## Walkthrough
 
+### Run as Docker container
+
+#### Running Docker Natively
+
+```
+docker run -it --rm -p 8080:8080 -t justintay/mockpass-spring-saml-sp:latest
+```
+
+Open *http://localhost:8080* to see the Service Provider application.
+
+#### Running Docker Machine
+
+Use 'docker-machine ip default' to get the IP address of the Docker host. You will then need to configure the SINGPASS_IDP_ID and CORPPASS_IDP_IP environment variables so that the Service Provider knows how to talk to MockPass.
+
+```
+docker run -it --rm -p 8080:8080 -e SINGPASS_IDP_ID=http://mockpass-host:5156/singpass/saml20 -e CORPPASS_IDP_ID=http://mockpass-host:5156/corppass/saml20 -t justintay/mockpass-spring-saml-sp:latest
+```
+
+Open *http://DOCKER-HOST:8080* to see the Service Provider application.
+
+*Note: the related Docker image is publicly available on [Docker Hub](https://hub.docker.com/r/justintay/mockpass-spring-saml-sp).*
+
+
 ### Installing and running the sample Service Provider
 
 ```
