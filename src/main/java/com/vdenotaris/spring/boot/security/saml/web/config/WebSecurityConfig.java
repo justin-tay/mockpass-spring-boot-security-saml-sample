@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
-import javax.xml.crypto.dsig.DigestMethod;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.velocity.app.VelocityEngine;
@@ -275,10 +273,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
 			throws MetadataProviderException {
 		try {
 			ClasspathResource storeFile = new ClasspathResource("/idp-singpass-metadata.xml");
-			ResourceBackedMetadataProvider httpMetadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
-			httpMetadataProvider.setParserPool(parserPool());
+			ResourceBackedMetadataProvider metadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
+			metadataProvider.setParserPool(parserPool());
 			ExtendedMetadataDelegate extendedMetadataDelegate = 
-					new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+					new ExtendedMetadataDelegate(metadataProvider, extendedMetadata());
 			extendedMetadataDelegate.setMetadataTrustCheck(true);
 			extendedMetadataDelegate.setMetadataRequireSignature(false);
 			backgroundTaskTimer.purge();
@@ -294,10 +292,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
 			throws MetadataProviderException {
 		try {
 			ClasspathResource storeFile = new ClasspathResource("/idp-corppass-metadata.xml");
-			ResourceBackedMetadataProvider httpMetadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
-			httpMetadataProvider.setParserPool(parserPool());
+			ResourceBackedMetadataProvider metadataProvider = new ResourceBackedMetadataProvider(backgroundTaskTimer, storeFile);
+			metadataProvider.setParserPool(parserPool());
 			ExtendedMetadataDelegate extendedMetadataDelegate = 
-					new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
+					new ExtendedMetadataDelegate(metadataProvider, extendedMetadata());
 			extendedMetadataDelegate.setMetadataTrustCheck(true);
 			extendedMetadataDelegate.setMetadataRequireSignature(false);
 			backgroundTaskTimer.purge();
