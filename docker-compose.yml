@@ -1,0 +1,20 @@
+version: '3'
+services:
+  web:
+    image: "justintay/mockpass-spring-saml-sp:latest"
+    environment:
+     - SINGPASS_IDP_ID=http://${MACHINE_IP}:5156/singpass/saml20
+     - CORPPASS_IDP_ID=http://${MACHINE_IP}:5156/corppass/saml20
+    ports:
+     - "8080:8080"
+  mockpass:
+    image: "justintay/mockpass:1.4.3"
+    environment:
+     - SINGPASS_IDP_ID=http://${MACHINE_IP}:5156/singpass/saml20
+     - CORPPASS_IDP_ID=http://${MACHINE_IP}:5156/corppass/saml20
+     - MOCKPASS_PORT=5156
+     - SHOW_LOGIN_PAGE=true
+     - SINGPASS_ASSERT_ENDPOINT=http://${MACHINE_IP}:8080/saml/SSO
+     - CORPPASS_ASSERT_ENDPOINT=http://${MACHINE_IP}:8080/saml/SSO
+    ports:
+     - "5156:5156"
