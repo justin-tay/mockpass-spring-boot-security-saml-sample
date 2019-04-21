@@ -68,6 +68,16 @@ Access the application at http://DOCKER-MACHINE-HOST:8080/landing
 
 *Note: the related Docker image is publicly available on [Docker Hub](https://hub.docker.com/r/justintay/mockpass-spring-saml-sp).*
 
+### Run using Docker Compose
+
+Edit the .env file to indicate the ip address of the docker host.
+
+Note that this will run both the sample Service Provider as well as MockPass.
+
+```
+docker-compose up
+```
+
 ---------
 
 ### References
