@@ -1,4 +1,6 @@
-﻿Spring Boot Sample SAML 2.0 Service Provider for SingPass/CorpPass
+﻿*This project has been superceded by [mockpass-spring-boot-example](https://github.com/justin-tay/mockpass-spring-boot-example) as SAML has been replaced by OpenID Connect for Singpass/Corppass*
+
+Spring Boot Sample SAML 2.0 Service Provider for SingPass/CorpPass
 ====================
 
 > Forked from spring-boot-security-saml-sample (https://github.com/vdenotaris/spring-boot-security-saml-sample)
